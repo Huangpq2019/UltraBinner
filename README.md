@@ -2,12 +2,12 @@
 
 Use DAS Tool to combine three binners (CONCOCT, MetaBAT_bam, MetaBinner).
 
-#CONCOCT
+# CONCOCT
 
-#NetaBAT_bam
+# NetaBAT_bam
 
-#MetaBinner
+# MetaBinner
 
-#DAS Tool
+# DAS Tool
 
-#Data
+# Data
