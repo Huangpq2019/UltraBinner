@@ -123,9 +123,9 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 
 ### Example:
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
-CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv<br>
-MetaBinner output file:
+* CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
+* MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv<br>
+* MetaBinner output file:
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
