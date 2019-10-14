@@ -30,10 +30,11 @@ Run CONCOCT
 concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b concoct_output/
 ```
 ### Example:
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then we mapped reads from samples to the file `original_contigs.fa` into .bam files, sorted these .bam file to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. We used the command below to run CONCOCT:
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then we mapped reads from samples to the file `original_contigs.fa` into .bam files, sorted these .bam files to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. We used the command below to run CONCOCT:
 ```
 concoct --coverage_file /path/marine_gold_assembly/input/coverage_f1k_sr.tsv --composition_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -b /path/marine_gold_assembly/output/concoct/ -t 46
 ``` 
+`-t` is the number of threads to use, more information about the command line options can be viewed by typing `concoct -h`.
 
 ## MetaBAT v2.12.1
 
