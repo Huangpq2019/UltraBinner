@@ -47,19 +47,13 @@ Requirements:<br>
 * gcc/g++ >= 4.9 or intel >= 18.0.1.163 or llvm >= 8.0<br>
 (htslib 1.9 is downloaded and installed automatically if not present on the system)
 ```
-# MetaBAT 2 (Linux 64-bit)
-wget https://bitbucket.org/berkeleylab/metabat/downloads/metabat-static-binary-linux-x64_v2.12.1.tar.gz
-tar xzvf metabat-static-binary-linux-x64_v2.12.1.tar.gz
-mv metabat-static-binary-linux-x64_v2.12.1 metabat
+#stable release version
+wget https://bitbucket.org/berkeleylab/metabat/get/master.tar.gz
+tar xzvf master.tar.gz
+cd berkeleylab-metabat-*
 
-cd metabat
-mkdir build 
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/metabat ..
-make
-make install
-cd ..
-rm -rf build
+#run the installation script
+mkdir build && cd build && cmake .. && make && make install
 ```
 MetaBAT can also run with Docker:
 ```
@@ -130,9 +124,11 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ### Example:
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
 CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k/
+MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv<br>
+MetaBinner output file:
 ```
-jgi_summarize_bam_contig_depths --outputDepth /path/marine_gold_assembly/output/metabat/depth.txt /path/marine_gold_assembly/input/map/sr*mapped.sorted.bam
+perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
+perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
 
-metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fasta -m 1500 -a /path/marine_gold_assembly/output/metabat_bam/depth.txt --saveCls -l -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k
+DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c marmgCAMI2_short_read_pooled_gold_standard_assembly_f500bp.fa -o das_tool
 ```
