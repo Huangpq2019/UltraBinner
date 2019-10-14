@@ -16,7 +16,7 @@ conda create -n concoct_env python=3 concoct
 ```
 Other ways to install CONCOCT is hosted on [readthedocs](https://concoct.readthedocs.org/)
 
-### Usage
+### Basic Usage
 Cut contigs into smaller parts
 ```
 cut_up_fasta.py original_contigs.fa -c 1000 -o 0 --merge_last -b contigs_1K.bed > contigs_1K.fa
@@ -29,41 +29,14 @@ Run CONCOCT
 ```
 concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b concoct_output/
 ```
-Example:
-We download the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and run CONCOCT:
+Example:<br>
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), then we mapped reads from samples to the file original_contigs.fa into `.bam` files and sorted these .bam file. We use this data to run CONCOCT:
 ```
 concoct --coverage_file /path/marine_gold_assembly/input/coverage_f1k_sr.tsv --composition_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -b /path/marine_gold_assembly/output/concoct/ -t 46
-```
-
-## Data preprocessing
-The preprocessing steps aim to generate coverage profile as input to our program.<br>
-
-### Composition Profile
-Composition profile is the vector representation of contigs and we use kmer to generate this information.
-```
-python gen_kmer.py /path/to/data/contig.fasta 1000 4
-```
-Here we choose k=4. By default we usually keep contigs longer than 1000, you can specify a different number. The kmer_file will be generated in the /path/to/data
-
-example:
-```
-python gen_kmer.py /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fasta 1000 4
-```
-
-You should download the raw data and input it into the /input directory. You input directory should look like this:<br>
-```.
-+-- assembly.fasta
-+-- sr
-|   +-- short_read_sample_1
-|   +-- short_read_sample_2
-+-- pb
-|   +-- pacbio_sample_1
-|   +-- pacbio_sample_2
-|   +-- pacbio_sample_3
-```
-download data from (https://data.cami-challenge.org/participate) and 
+``` 
 
 ## MetaBAT v2.12.1
+
 
 ## MetaBinner
 
