@@ -34,13 +34,12 @@ minimap2 -t 45 -ax sr $assembly $file > "${mapdir}/sr_${cnt}.sam";
 
 done
 
-for file in ${pb_read_dir}/*;
-do echo $file;
-let cnt=cnt+1;
-echo $cnt;
-minimap2 -t 45 -ax map-pb $assembly $file > "${mapdir}/pb_${cnt}.sam";
-
-done
+#for file in ${pb_read_dir}/*;
+#do echo $file;
+#let cnt=cnt+1;
+#echo $cnt;
+#minimap2 -t 45 -ax map-pb $assembly $file > "${mapdir}/pb_${cnt}.sam";
+#done
 
 for file in ${mapdir}/*.sam
 do
