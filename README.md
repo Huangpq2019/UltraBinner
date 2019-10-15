@@ -21,9 +21,9 @@ Cut contigs into smaller parts
 ```
 cut_up_fasta.py original_contigs.fa -c 1000 -o 0 --merge_last -b contigs_1K.bed > contigs_1K.fa
 ```
-Generate table with coverage depth information per sample and subcontig. This step assumes the directory 'map' contains sorted and indexed bam files where each sample has been mapped against the original contigs.
+Generate table with coverage depth information per sample and subcontig. This step assumes the directory 'mapping' contains sorted and indexed bam files where each sample has been mapped against the original contigs.
 ```
-concoct_coverage_table.py contigs_1K.bed map/Sample*.sorted.bam > coverage_table.tsv
+concoct_coverage_table.py contigs_1K.bed mapping/Sample*.sorted.bam > coverage_table.tsv
 ```
 Run CONCOCT
 ```
@@ -31,7 +31,7 @@ concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b 
 ```
 ### Example:
 * Data preprocessing:<br>
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. 
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path/marine_gold_assembly/input/mapping/. The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed.
 You input directory should look like this:
 ```
 .
@@ -95,13 +95,22 @@ b) Run metabat
 metabat2 -i assembly.fasta -a depth.txt -o bins_dir/bin 
 ```
 ### Example:
-We use the sorted data in the directory /path//marine_gold_assembly/input/map/ and the `original_contigs.fa` file to run MetaBAT:
+* Data preprocessing:<br>
+We used `gen_cov.sh` and the `original_contigs.fa` file to get the sorted files and input them into the directory /path//marine_gold_assembly/input/map/.
+
+* Run MetaBAT:
 ```
 jgi_summarize_bam_contig_depths --outputDepth /path/marine_gold_assembly/output/metabat/depth.txt /path/marine_gold_assembly/input/map/sr*mapped.sorted.bam
 
 metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fasta -m 1500 -a /path/marine_gold_assembly/output/metabat_bam/depth.txt --saveCls -l -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k
 ```
 `-m` means the minimum size of a contig for binning (should be >=1500); `--saveCls` represents to save cluster memberships as a matrix format; `-l` means to output only sequence labels as a list in a column without sequences. More information about the command line options can be viewed by typing `metabat2 -h`.
+
+* Processing mMetaBAT output files:
+Using `metabat2_to_binlabel.py` to convert bins file to a result file:
+```
+metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold_f1k -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv
+```
 
 ## MetaBinner
 ...
@@ -144,7 +153,7 @@ We use the output of the three methods mentioned above as the input of the DAS T
 * MetaBinner output file:
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
-perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
+perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
 
 DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c marmgCAMI2_short_read_pooled_gold_standard_assembly_f500bp.fa -o das_tool
 ```
