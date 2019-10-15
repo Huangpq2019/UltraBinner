@@ -31,7 +31,7 @@ concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b 
 ```
 ### Example:
 * Data preprocessing:<br>
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path/marine_gold_assembly/input/mapping/. The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed.
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path/marine_gold_assembly/input/mapping/. The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed.<br>
 You input directory should look like this:
 ```
 .
@@ -149,7 +149,7 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ### Example:
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
 * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-* MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k/marine_gold_f1k_metabinner_result.tsv<br>
+* MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
 * MetaBinner output file:
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
