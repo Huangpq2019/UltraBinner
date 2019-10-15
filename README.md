@@ -31,7 +31,7 @@ concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b 
 ```
 ### Example:
 * Data preprocessing:<br>
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Tthen slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. 
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. 
 You input directory should look like this:
 ```
 .
