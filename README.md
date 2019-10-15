@@ -30,7 +30,23 @@ Run CONCOCT
 concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b concoct_output/
 ```
 ### Example:
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then we mapped reads from samples to the file `original_contigs.fa` into .bam files, sorted these .bam files to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. We used the command below to run CONCOCT:
+* Data preprocessing:<br>
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Tthen slightly modify `gen_cov.sh` and run it to get `.sorted.bam` files and put these sorted files into /path//marine_gold_assembly/input/map/. 
+You input directory should look like this:
+```
+.
++-- assembly.fasta
++-- sr
+|   +-- short_read_sample_1
+|   +-- short_read_sample_2
++-- pb
+|   +-- pacbio_sample_1
+|   +-- pacbio_sample_2
+|   +-- pacbio_sample_3
+```
+
+* Run CONCOCT:<br>
+We used the command below to run CONCOCT:
 ```
 concoct --coverage_file /path/marine_gold_assembly/input/coverage_f1k_sr.tsv --composition_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -b /path/marine_gold_assembly/output/concoct/ -t 46
 ``` 
