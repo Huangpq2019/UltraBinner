@@ -241,8 +241,7 @@ We use the output of the three methods mentioned above as the input of the DAS T
   * MetaBinner output file: /path/marine_gold_assembly/output/MetaBinner/result.tsv<br>
   * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
   * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
-<br>
-For MetaBinner output, you should put it into /path/marine_gold_assembly/output/das_tool/ and delete the header tags.
+For MetaBinner output, you should put it into /path/marine_gold_assembly/output/das_tool/ and delete the header tags.<br>
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
