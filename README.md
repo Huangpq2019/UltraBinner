@@ -38,8 +38,7 @@ concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b 
 ### Example:
 * Data preprocessing:<br>
 We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `coverage_f1k_sr.tsv` files. <br>
-The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed. The details can be see in MetaBinner section.<br>
-Besides, we only used the sort reads here.<br>
+
 You input directory should look like this:
 ```
 .
@@ -52,6 +51,17 @@ You input directory should look like this:
 |   +-- pacbio_sample_2
 |   +-- pacbio_sample_3
 ```
+The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed. The details can be see in `MetaBinner` section.<br>
+Besides, we only used the sort reads here, so we comment out the following code in `gen_cov.sh`:<br>
+```
+#for file in ${pb_read_dir}/*;
+#do echo $file;
+#let cnt=cnt+1;
+#echo $cnt;
+#minimap2 -t 45 -ax map-pb $assembly $file > "${mapdir}/pb_${cnt}.sam";
+#done
+```
+If you want to preprocess both sort reads and pacbio data, you should remove the symbol `#` from above code.
 
 * Run CONCOCT:<br>
 We used the command below to run CONCOCT:
