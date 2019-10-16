@@ -139,7 +139,10 @@ metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine
 ```
 
 ## MetaBinner
-...
+A method imporves large scale binning performance with ensemble K-means by considering multiple types of features.You can get it from https://github.com/ziyewang/MetaBinner.
+
+### Installation
+
 
 ## DAS Tool v1.1.1
 DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly. You can git it from https://github.com/cmks/DAS_Tool.
@@ -150,7 +153,7 @@ If you use DAS Tool in your publication, please cite:<br>
 Christian M. K. Sieber, Alexander J. Probst, Allison Sharrar, Brian C. Thomas, Matthias Hess, Susannah G. Tringe & Jillian F. Banfield (2018). Recovery of genomes from metagenomes via a dereplication, aggregation and scoring strategy. <br>
 Nature Microbiology. https://doi.org/10.1038/s41564-018-0171-1.
 
-###  Installation
+### Installation
 DAS Tool can be installed via bioconda and homebrew. You can also install DAS Tool manually，for details, see [install](https://github.com/cmks/DAS_Tool#installation). We install DAS Tool using conda:
 ```
 conda config --add channels defaults
