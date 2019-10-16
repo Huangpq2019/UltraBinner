@@ -238,9 +238,9 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ### Example:
 * Data preprocessing<br>
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
- * MetaBinner output file: /path/marine_gold_assembly/output/MetaBinner/result.tsv<br>
- * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
- * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
+  * MetaBinner output file: /path/marine_gold_assembly/output/MetaBinner/result.tsv<br>
+  * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
+  * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
  For MetaBinner output, you should put it into /path/marine_gold_assembly/output/das_tool/ and delete the header tags.
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
