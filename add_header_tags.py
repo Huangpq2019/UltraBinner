@@ -16,7 +16,10 @@ def add_header_fags(input_file, SampleID, output_file):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--input_file",  help="Iutput files path")
-    parser.add_argument("-f", help="Input the SampleID")
+    parser.add_argument("-f", help="Input the SampleID") #SAMPLEID is a unique identifier for a sequence sample. 
+                                                         #Do not give a tool name or your name here, we want to process submissions anonymously.
+                                                         #If you want to submit results for a dataset, just refer to its name as the sample id (e.g.:1stCAMIChallenge_medium_GoldStandardAssembly). 
+                                                         #If you want to submit to a specific sample just use the name of the sample (e.g.:CAMI_MED_S001). 
     parser.add_argument("-o", "--output_file", help="Output file")
     args = parser.parse_args()
     add_header_fags(args.input_file, args.f, args.output_file)
