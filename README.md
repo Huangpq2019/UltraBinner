@@ -1,7 +1,85 @@
 # UltraBinner
 
-Use DAS Tool(v1.1.1) to integrate the results of three binners (CONCOCT V1.1.0, MetaBAT V2.12.1, MetaBinner) to calculate an optimized, non-redundant set of bins from a single assembly. <br>
+Use DAS Tool(v1.1.1) to integrate the results of three binners (MetaBinner, CONCOCT V1.1.0, MetaBAT V2.12.1) to calculate an optimized, non-redundant set of bins from a single assembly. <br>
 IF you have the result of other binners(e.g. MaxBin, SolidBin), you can also add the results as the input of DAS Tool.<br>
+
+## MetaBinner
+A method imporves large scale binning performance with ensemble K-means by considering multiple types of features.You can get it from https://github.com/ziyewang/MetaBinner.
+
+### Installation
+We recommend using conda to run Metabinner. Download here
+After installing Anaconda (or miniconda), fisrt obtain Metabinner:
+```
+git clone https://github.com/ziyewang/MetaBinner
+```
+Then simply create a metabinner environment
+```
+conda env create -f metabinner_env.yaml
+conda activate metabinner_env
+```
+Set checkM data path as described in here
+```
+checkm data setRoot <checkm_data_dir>
+```
+You may need to run these commands to make the files executable
+```
+chmod +x ~path_to_MetaBinner/auxiliary/test_getmarker.pl
+chmod +x ~path_to_MetaBinner/auxiliary/FragGeneScan1.19/run_FragGeneScan.pl
+chmod +x ~path_to_MetaBinner/auxiliary/hmmer-3.1b1/bin/hmmsearch
+chmod +x ~path_to_MetaBinner/auxiliary/FragGeneScan1.19/FragGeneScan
+```
+
+### Usage
+#### Data preprocessing
+* Get Coverage Profile<br>
+You download the data and put the files into your input directory. Then slightly modify `gen_cov.sh` and run it.<br>
+Note that minimap2, samtools and bedtools are need to be installed to run `gen_cov.sh`.<br>
+
+You input directory should look like this:
+```
+.
++-- assembly.fasta
++-- sr
+|   +-- short_read_sample_1
+|   +-- short_read_sample_2
++-- pb
+|   +-- pacbio_sample_1
+|   +-- pacbio_sample_2
+|   +-- pacbio_sample_3
+```
+For conda environment, you should check whether perl is installed.
+<br>
+
+* Input files<br>
+You need to run like this to obtain the composition profiles and the coverage profiles (only short read samples; only long read samples)
+```
+scripts/run.sh input_path/contigs.fasta contigs_length_threshold kmer_length
+```
+"contigs_length_threshold" means only the contigs longer than the value are kept for binning. For example,
+```
+./run.sh input_path/contigs.fasta 1000 4
+```
+Note: The `coverage_new.tsv` file should be put into the "input_path" and if the sample numbers of the long read samples and the short read samples are different, you need to change the `split_coverage.py`.
+<br>
+
+#### Run MetaBinner<br>
+```
+OPENBLAS_NUM_THREADS=1 python Metabinner.py --contig_file input_path/contigs.fasta --coverage_profiles input_path/coverage_sr_new.tsv --composition_profiles input_path/kmer_4_f0.csv --output output_path/result.tsv --log output_path/result.log --pacbio_read_profiles input_path/coverage_pb_new.tsv --use_hmm --hmm_icm_path path_to_MetaBinner/hmm_data/hmm/
+```
+More information about the command line options can be viewed by typing `MetaBinner -h`.
+
+### Example
+* Data preprocessing<br>
+We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then modify gen_cov.sh and run it.<br>
+Then we run `run.sh` to get the input files:
+```
+./run.sh /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fa 1000 4
+```
+
+* Run MetaBinner<br>
+```
+OPENBLAS_NUM_THREADS=1 python Metabinner.py --contig_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa --coverage_profiles /path/marine_gold_assembly/input/coverage_sr_new.tsv --composition_profiles /path/marine_gold_assembly/input/kmer_4_f0.csv --output /path/marine_gold_assembly/output/MetaBinner/result.tsv --log /path/marine_gold_assembly/output/MetaBinner/result.log --pacbio_read_profiles /path/marine_gold_assembly/input/coverage_pb_new.tsv --use_hmm --hmm_icm_path path_to_MetaBinner/hmm_data/hmm/
+```
 
 ## CONCOCT v1.1.0
 CONCOCT is a program for unsupervised binning of metagenomic contigs by using nucleotide composition, coverage data in multiple samples and linkage data from paired end reads. You can get it from https://github.com/BinPro/CONCOCT.
@@ -37,39 +115,11 @@ Run CONCOCT
 concoct --composition_file contigs_10K.fa --coverage_file coverage_table.tsv -b concoct_output/
 ```
 ### Example:
-* Data preprocessing:<br>
-We downloaded the raw data from the 2nd CAMI Challenge Marine Dataset(https://data.cami-challenge.org/participate), and decompressed the data into /path/marine_gold_assembly/input/. Then slightly modify `gen_cov.sh` and run it to get `coverage_f1k_sr.tsv` files. <br>
-Note that minimap2, samtools and bedtools are need to be installed to run `gen_cov.sh`.
-
-You input directory should look like this:
+We use the contigs.fasta and coverage profile in /path/marine_gold_assembly/input/ to run CONCOCT:
 ```
-.
-+-- assembly.fasta
-+-- sr
-|   +-- short_read_sample_1
-|   +-- short_read_sample_2
-+-- pb
-|   +-- pacbio_sample_1
-|   +-- pacbio_sample_2
-|   +-- pacbio_sample_3
-```
-The original_contigs.fa we used here is filtered and the contigs below 1 kbp was removed. The details can be see in `MetaBinner` section.<br>
-Besides, we only used the sort reads here, so we comment out the following code in `gen_cov.sh`:<br>
-```
-#for file in ${pb_read_dir}/*;
-#do echo $file;
-#let cnt=cnt+1;
-#echo $cnt;
-#minimap2 -t 45 -ax map-pb $assembly $file > "${mapdir}/pb_${cnt}.sam";
-#done
-```
-If you want to preprocess both sort reads and pacbio data, you should remove the symbol `#` from above code.
-
-* Run CONCOCT:<br>
-We used the command below to run CONCOCT:
-```
-concoct --coverage_file /path/marine_gold_assembly/input/coverage_f1k_sr.tsv --composition_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -b /path/marine_gold_assembly/output/concoct/ -t 46
+concoct --coverage_file /path/marine_gold_assembly/input/coverage_sr_new.tsv --composition_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -b /path/marine_gold_assembly/output/concoct/ -t 46
 ``` 
+Note: We only use the sort reads to run CONCOCT.<br>
 `-t` is the number of threads to use, more information about the command line options can be viewed by typing `concoct -h`.
 
 ## MetaBAT v2.12.1
@@ -121,10 +171,8 @@ b) Run metabat
 metabat2 -i assembly.fasta -a depth.txt -o bins_dir/bin 
 ```
 ### Example:
-* Data preprocessing:<br>
-We used the `sr*mapped.sorted.bam` files in /path/marine_gold_assembly/input/map/ as the input of MetaBAT, the sorted files generated by `gen_cov.sh`.
-
-* Run MetaBAT:
+* Run MetaBAT<br>
+We used the `sr*mapped.sorted.bam` files in /path/marine_gold_assembly/input/map/ to run MetaBAT2, the sorted files generated by `gen_cov.sh`:
 ```
 jgi_summarize_bam_contig_depths --outputDepth /path/marine_gold_assembly/output/metabat/depth.txt /path/marine_gold_assembly/input/map/sr*mapped.sorted.bam
 
@@ -132,17 +180,11 @@ metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_s
 ```
 `-m` means the minimum size of a contig for binning (should be >=1500); `--saveCls` represents to save cluster memberships as a matrix format; `-l` means to output only sequence labels as a list in a column without sequences. More information about the command line options can be viewed by typing `metabat2 -h`.
 
-* Processing MetaBAT output files:<br>
+* Processing MetaBAT output files<br>
 Using `metabat2_to_binlabel.py` to convert bins file to a result file:
 ```
 metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv
 ```
-
-## MetaBinner
-A method imporves large scale binning performance with ensemble K-means by considering multiple types of features.You can get it from https://github.com/ziyewang/MetaBinner.
-
-### Installation
-
 
 ## DAS Tool v1.1.1
 DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly. You can git it from https://github.com/cmks/DAS_Tool.
@@ -186,7 +228,7 @@ Scaffold_8	bin.01
 Scaffold_42	bin.02
 Scaffold_49	bin.03
 ```
-You should remove the header fags.
+You should delete the header tag information.
 
 #### Run DAS Tool
 ```
@@ -194,11 +236,12 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ```
 
 ### Example:
-* Data preprocessing:<br>
+* Data preprocessing<br>
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
-  * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-  * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
-  * MetaBinner output file:需要把开头的三行@去掉
+ * MetaBinner output file: /path/marine_gold_assembly/output/MetaBinner/result.tsv<br>
+ * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
+ * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
+ For MetaBinner output, you should put it into /path/marine_gold_assembly/output/das_tool/ and delete the header tags.
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
