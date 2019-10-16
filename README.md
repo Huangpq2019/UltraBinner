@@ -3,6 +3,7 @@
 Use DAS Tool(v1.1.1) to integrate the results of three binners (MetaBinner, CONCOCT V1.1.0, MetaBAT V2.12.1) to calculate an optimized, non-redundant set of bins from a single assembly. <br>
 IF you have the result of other binners(e.g. MaxBin, SolidBin), you can also add the results as the input of DAS Tool.<br>
 
+<br>
 ## MetaBinner
 A method imporves large scale binning performance with ensemble K-means by considering multiple types of features.You can get it from https://github.com/ziyewang/MetaBinner.
 
@@ -31,7 +32,7 @@ chmod +x ~path_to_MetaBinner/auxiliary/FragGeneScan1.19/FragGeneScan
 
 ### Usage
 #### Data preprocessing
-##### Get Coverage Profile<br>
+#### Get Coverage Profile<br>
 You download the data and put the files into your input directory. Then slightly modify `gen_cov.sh` and run it.<br>
 Note that minimap2, samtools and bedtools are need to be installed to run `gen_cov.sh`.<br>
 
@@ -50,7 +51,7 @@ You input directory should look like this:
 For conda environment, you should check whether perl is installed.
 <br>
 
-##### Input files<br>
+#### Input files<br>
 You need to run like this to obtain the composition profiles and the coverage profiles (only short read samples; only long read samples)
 ```
 scripts/run.sh input_path/contigs.fasta contigs_length_threshold kmer_length
@@ -81,6 +82,7 @@ Then we run `run.sh` to get the input files:
 OPENBLAS_NUM_THREADS=1 python Metabinner.py --contig_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa --coverage_profiles /path/marine_gold_assembly/input/coverage_sr_new.tsv --composition_profiles /path/marine_gold_assembly/input/kmer_4_f0.csv --output /path/marine_gold_assembly/output/MetaBinner/result.tsv --log /path/marine_gold_assembly/output/MetaBinner/result.log --pacbio_read_profiles /path/marine_gold_assembly/input/coverage_pb_new.tsv --use_hmm --hmm_icm_path path_to_MetaBinner/hmm_data/hmm/
 ```
 
+<br>
 ## CONCOCT v1.1.0
 CONCOCT is a program for unsupervised binning of metagenomic contigs by using nucleotide composition, coverage data in multiple samples and linkage data from paired end reads. You can get it from https://github.com/BinPro/CONCOCT.
 
@@ -122,6 +124,7 @@ concoct --coverage_file /path/marine_gold_assembly/input/coverage_sr_new.tsv --
 Note: We only use the sort reads to run CONCOCT.<br>
 `-t` is the number of threads to use, more information about the command line options can be viewed by typing `concoct -h`.
 
+<br>
 ## MetaBAT v2.12.1
 MetaBAT integrates the Tetranucleotide frequency distance Probability (TDP) and the abundance distance probability (ADP) of each contig pair and modified k-medoid clustering algorithm is utilized for contig binning. You can get it from https://bitbucket.org/berkeleylab/metabat/src/master/.
 
@@ -186,6 +189,7 @@ Using `metabat2_to_binlabel.py` to convert bins file to a result file:
 metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv
 ```
 
+<br>
 ## DAS Tool v1.1.1
 DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly. You can git it from https://github.com/cmks/DAS_Tool.
 
