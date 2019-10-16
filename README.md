@@ -1,6 +1,7 @@
 # UltraBinner
 
-Use DAS Tool(v1.1.1) to integrate the results of three binners (CONCOCT V1.1.0, MetaBAT V2.12.1, MetaBinner) to calculate an optimized, non-redundant set of bins from a single assembly. 
+Use DAS Tool(v1.1.1) to integrate the results of three binners (CONCOCT V1.1.0, MetaBAT V2.12.1, MetaBinner) to calculate an optimized, non-redundant set of bins from a single assembly. <br>
+IF you have the result of other binners(e.g. MaxBin, SolidBin), you can also add the results as the input of DAS Tool.<br>
 
 ## CONCOCT v1.1.0
 CONCOCT is a program for unsupervised binning of metagenomic contigs by using nucleotide composition, coverage data in multiple samples and linkage data from paired end reads. You can get it from https://github.com/BinPro/CONCOCT.
@@ -177,22 +178,23 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ```
 
 ### Example:
-* Data preprocessing
+* Data preprocessing:<br>
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
-* CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-* MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
-* MetaBinner output file:需要把开头的三行@去掉
+** CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
+** MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
+** MetaBinner output file:需要把开头的三行@去掉
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
 ```
+
 * Run DAS Tool:
 ```
-DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c marmgCAMI2_short_read_pooled_gold_standard_assembly_f500bp.fa -o das_tool/das_tool --threads 25 --score_threshold 0.3
+DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c marmgCAMI2_short_read_pooled_gold_standard_assembly_f500bp.fa -o das_tool/ensemble --threads 25 --score_threshold 0.3
 ```
-`--threads` is the number of threads we use;`--score_threshold` set the threshold to keep selecting bins(default: 0.5).More information 
-about the command line options can be viewed by typing `DAS_Tool -h`.
-* Process DAS Tool output files to meet CAMI verification format：
+`--threads` is the number of threads we use;`--score_threshold` set the threshold to keep selecting bins(default: 0.5).More information about the command line options can be viewed by typing `DAS_Tool -h`.
+
+* Process DAS Tool output files to meet CAMI verification format：<br>
 Add header tags (e.g. @Version, @SampleID, @@SEQUENCEID	TAXID	BINID) to the file, see [file_formats](https://github.com/CAMI-challenge/contest_information/blob/master/file_formats/CAMI_B_specification.mkd) for details.
 ```
 
