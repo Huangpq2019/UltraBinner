@@ -2,8 +2,8 @@
 
 Use DAS Tool(v1.1.1) to integrate the results of three binners (MetaBinner, CONCOCT V1.1.0, MetaBAT V2.12.1) to calculate an optimized, non-redundant set of bins from a single assembly. <br>
 IF you have the result of other binners(e.g. MaxBin, SolidBin), you can also add the results as the input of DAS Tool.<br>
-
 <br>
+
 ## MetaBinner
 A method imporves large scale binning performance with ensemble K-means by considering multiple types of features.You can get it from https://github.com/ziyewang/MetaBinner.
 
