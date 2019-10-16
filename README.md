@@ -81,8 +81,8 @@ Then we run `run.sh` to get the input files:
 ```
 OPENBLAS_NUM_THREADS=1 python Metabinner.py --contig_file /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa --coverage_profiles /path/marine_gold_assembly/input/coverage_sr_new.tsv --composition_profiles /path/marine_gold_assembly/input/kmer_4_f0.csv --output /path/marine_gold_assembly/output/MetaBinner/result.tsv --log /path/marine_gold_assembly/output/MetaBinner/result.log --pacbio_read_profiles /path/marine_gold_assembly/input/coverage_pb_new.tsv --use_hmm --hmm_icm_path path_to_MetaBinner/hmm_data/hmm/
 ```
-
 <br>
+
 ## CONCOCT v1.1.0
 CONCOCT is a program for unsupervised binning of metagenomic contigs by using nucleotide composition, coverage data in multiple samples and linkage data from paired end reads. You can get it from https://github.com/BinPro/CONCOCT.
 
@@ -123,8 +123,8 @@ concoct --coverage_file /path/marine_gold_assembly/input/coverage_sr_new.tsv --
 ``` 
 Note: We only use the sort reads to run CONCOCT.<br>
 `-t` is the number of threads to use, more information about the command line options can be viewed by typing `concoct -h`.
-
 <br>
+
 ## MetaBAT v2.12.1
 MetaBAT integrates the Tetranucleotide frequency distance Probability (TDP) and the abundance distance probability (ADP) of each contig pair and modified k-medoid clustering algorithm is utilized for contig binning. You can get it from https://bitbucket.org/berkeleylab/metabat/src/master/.
 
@@ -188,8 +188,8 @@ Using `metabat2_to_binlabel.py` to convert bins file to a result file:
 ```
 metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv
 ```
-
 <br>
+
 ## DAS Tool v1.1.1
 DAS Tool is an automated method that integrates the results of a flexible number of binning algorithms to calculate an optimized, non-redundant set of bins from a single assembly. You can git it from https://github.com/cmks/DAS_Tool.
 
@@ -265,3 +265,7 @@ We use the `add_header_tags.py` to add header tags:
 ```
 python add_header_tags.py -r /path/marine_gold_assembly/output/das_tool/ensemble_DASTool_scaffolds2bin.txt -f /path/marine_gold_assembly/iutput/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -o /path/marine_gold_assembly/output/das_tool/ensemble_DASTool_scaffolds2bin.tsv
 ```
+<br>
+
+## Contacts and bug reports
+Please send bug reports or questions to PingqinHuang: 18210240092@fudan.edu.cm, Ziye Wang: zwang17@fudan.edu.cn and Dr. Shanfeng Zhu: zhusf@fudan.edu.cn
