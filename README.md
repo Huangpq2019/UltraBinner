@@ -127,14 +127,14 @@ We used the `sr*mapped.sorted.bam` files in /path/marine_gold_assembly/input/map
 ```
 jgi_summarize_bam_contig_depths --outputDepth /path/marine_gold_assembly/output/metabat/depth.txt /path/marine_gold_assembly/input/map/sr*mapped.sorted.bam
 
-metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fasta -m 1500 -a /path/marine_gold_assembly/output/metabat_bam/depth.txt --saveCls -l -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k
+metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_standard_assembly.fasta -m 1500 -a /path/marine_gold_assembly/output/metabat_bam/depth.txt --saveCls -l -o /path/marine_gold_assembly/output/metabat/marine_gold
 ```
 `-m` means the minimum size of a contig for binning (should be >=1500); `--saveCls` represents to save cluster memberships as a matrix format; `-l` means to output only sequence labels as a list in a column without sequences. More information about the command line options can be viewed by typing `metabat2 -h`.
 
 * Processing mMetaBAT output files:<br>
 Using `metabat2_to_binlabel.py` to convert bins file to a result file:
 ```
-metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold_f1k -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv
+metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv
 ```
 
 ## MetaBinner
@@ -172,6 +172,18 @@ Some binning tools (such as CONCOCT) provide a comma separated tabular output. T
 ```
 perl -pe "s/,/\t/g;" scaffolds2bin.csv > scaffolds2bin.tsv.
 ```
+Some binning tools (such as MetaBinner) provide a CAMI verification format output:
+```
+@Version:0.9.0
+@SampleID:a unique identifier for a sequence sample
+@@SEQUENCEID    BINID
+Scaffold_1	bin.01
+Scaffold_8	bin.01
+Scaffold_42	bin.02
+Scaffold_49	bin.03
+```
+You should remove the header fags.
+
 #### Run DAS Tool
 ```
 DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,methodN -c contigs.fa -o myOutput
@@ -180,9 +192,9 @@ DAS_Tool -i methodA.scaffolds2bin,...,methodN.scaffolds2bin -l methodA,...,metho
 ### Example:
 * Data preprocessing:<br>
 We use the output of the three methods mentioned above as the input of the DAS Tool:<br>
-** CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
-** MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
-** MetaBinner output file:需要把开头的三行@去掉
+  * CONCOCT output file: /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv<br>
+  * MetaBAT output file: /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv<br>
+  * MetaBinner output file:需要把开头的三行@去掉
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
@@ -190,12 +202,14 @@ perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k_m
 
 * Run DAS Tool:
 ```
-DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c marmgCAMI2_short_read_pooled_gold_standard_assembly_f500bp.fa -o das_tool/ensemble --threads 25 --score_threshold 0.3
+cd /path/marine_gold_assembly/output/das_tool
+DAS_Tool -i concoct.scaffolds2bin.tsv,metabat.scaffolds2bin.tsv,metabinner.scaffolds2bin.tsv -l concoct,metabat,metabinner -c /path/marine_gold_assembly/iutput/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -o ensemble --threads 25 --score_threshold 0.3
 ```
 `--threads` is the number of threads we use;`--score_threshold` set the threshold to keep selecting bins(default: 0.5).More information about the command line options can be viewed by typing `DAS_Tool -h`.
 
 * Process DAS Tool output files to meet CAMI verification format：<br>
-Add header tags (e.g. @Version, @SampleID, @@SEQUENCEID	TAXID	BINID) to the file, see [file_formats](https://github.com/CAMI-challenge/contest_information/blob/master/file_formats/CAMI_B_specification.mkd) for details.
+Add header tags (e.g. @Version, @SampleID, @@SEQUENCEID	TAXID	BINID) to the file, see [file_formats](https://github.com/CAMI-challenge/contest_information/blob/master/file_formats/CAMI_B_specification.mkd) for details.<br>
+We use the `add_header_tags.py` to add header tags:
 ```
-
+python add_header_tags.py -r /path/marine_gold_assembly/output/das_tool/ensemble_DASTool_scaffolds2bin.txt -f /path/marine_gold_assembly/iutput/marmgCAMI2_short_read_pooled_gold_standard_assembly_f1k.fa -o /path/marine_gold_assembly/output/das_tool/ensemble_DASTool_scaffolds2bin.tsv
 ```
