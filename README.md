@@ -131,10 +131,10 @@ metabat2 -i /path/marine_gold_assembly/input/marmgCAMI2_short_read_pooled_gold_s
 ```
 `-m` means the minimum size of a contig for binning (should be >=1500); `--saveCls` represents to save cluster memberships as a matrix format; `-l` means to output only sequence labels as a list in a column without sequences. More information about the command line options can be viewed by typing `metabat2 -h`.
 
-* Processing mMetaBAT output files:<br>
+* Processing MetaBAT output files:<br>
 Using `metabat2_to_binlabel.py` to convert bins file to a result file:
 ```
-metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv
+metabat2_to_binlabel.py --paths /path/marine_gold_assembly/output/metabat/marine_gold -o /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv
 ```
 
 ## MetaBinner
@@ -197,7 +197,7 @@ We use the output of the three methods mentioned above as the input of the DAS T
   * MetaBinner output file:需要把开头的三行@去掉
 ```
 perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/concoct/clustering_gt1000.csv > /path/marine_gold_assembly/output/das_tool/concoct.scaffolds2bin.tsv
-perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_f1k_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
+perl -pe "s/,/\t/g;" /path/marine_gold_assembly/output/metabat/marine_gold_metabinner_result.tsv > /path/marine_gold_assembly/output/das_tool/metabat.scaffolds2bin.tsv
 ```
 
 * Run DAS Tool:
